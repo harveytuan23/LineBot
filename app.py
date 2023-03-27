@@ -14,7 +14,6 @@ import logging
 logName = 'MyProgram.log'
 logDir = 'log'
 logPath = logDir + '/' + logName
-#1231321231231121131312
 
 # create log directory
 os.makedirs(logDir, exist_ok=True)
@@ -86,6 +85,8 @@ def index():
                     payload["messages"] = [getNameEmojiMessage()]
                 elif text == "出去玩囉":
                     payload["messages"] = [getPlayStickerMessage()]
+                elif text == "高鐵":
+                    payload["messages"] = [getTHSRMessage()]
                 elif text == "台北101":
                     payload["messages"] = [getTaipei101ImageMessage(),
                                            getTaipei101LocationMessage(),
@@ -211,6 +212,29 @@ def pretty_echo(event):
 def sendTextMessageToMe():
     pushMessage({})
     return 'OK'
+
+
+def getTHSRMessage():
+    form_data = {
+        'SearchType': 'S',
+        'Lang': 'TW',
+        'StartStation': 'NanGang',
+        'EndStation': 'ZuoYing',
+        'OutWardSearchDate': '2023/03/28',
+        'OutWardSearchTime': '16:30',
+        'ReturnSearchDate': '2023/03/27',
+        'ReturnSearchTime': '22:30',
+        'DiscountType': ''
+    }
+
+    response = requests.post(
+        'https://www.thsrc.com.tw/TimeTable/Search', data=form_data)
+    response.encoding = "utf-8"
+    data = json.loads(response.text)
+
+    print(data)
+
+    return data
 
 
 def getNameEmojiMessage():
@@ -361,16 +385,16 @@ def getMRTVideoMessage(originalContentUrl=F"{end_point}/static/taipei_101_video.
     return message
 
 
-def getMRTSoundMessage():
-    message = dict()
-    message["type"] = "audio"
-    message["originalContentUrl"] = F"{end_point}/static/mrt_sound.m4a"
-    import audioread
-    with audioread.audio_open('static/mrt_sound.m4a') as f:
-        # totalsec contains the length in float
-        totalsec = f.duration
-    message["duration"] = totalsec * 1000
-    return message
+# def getMRTSoundMessage():
+#     message = dict()
+#     message["type"] = "audio"
+#     message["originalContentUrl"] = F"{end_point}/static/mrt_sound.m4a"
+#     import audioread
+#     with audioread.audio_open('static/mrt_sound.m4a') as f:
+#         # totalsec contains the length in float
+#         totalsec = f.duration
+#     message["duration"] = totalsec * 1000
+#     return message
 
 
 def getTaipei101ImageMessage(originalContentUrl=F"{end_point}/static/taipei_101.jpeg"):
