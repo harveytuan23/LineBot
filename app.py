@@ -86,7 +86,8 @@ def index():
                 elif text == "出去玩囉":
                     payload["messages"] = [getPlayStickerMessage()]
                 elif text == "高鐵":
-                    payload["messages"] = [getTHSRMessage()]
+                    payload["messages"] = [getTHSRChoose()]
+                    # payload["messages"] = []
                 elif text == "台北101":
                     payload["messages"] = [getTaipei101ImageMessage(),
                                            getTaipei101LocationMessage(),
@@ -152,16 +153,16 @@ def index():
                     getLocationConfirmMessage(title, latitude, longitude)]
                 logger.info(payload)
                 replyMessage(payload)
+
         elif events[0]["type"] == "postback":
+
             if "params" in events[0]["postback"]:
-                reservedTime = events[0]["postback"]["params"]["datetime"].replace(
+                searchTime = events[0]["postback"]["params"]["datetime"].replace(
                     "T", " ")
                 payload["messages"] = [
-                    {
-                        "type": "text",
-                        "text": F"已完成預約於{reservedTime}的叫車服務"
-                    }
+                    getTHSRMessage(searchTime)
                 ]
+                logger.info(searchTime)
                 replyMessage(payload)
             else:
                 data = json.loads(events[0]["postback"]["data"])
@@ -214,16 +215,53 @@ def sendTextMessageToMe():
     return 'OK'
 
 
-def getTHSRMessage():
+def getTHSRChoose():
+    message = {
+        "type": "template",
+        "altText": "This is a buttons template",
+        "template": {
+            "type": "buttons",
+            "imageAspectRatio": "rectangle",
+            "imageSize": "cover",
+            "imageBackgroundColor": "#FFFFFF",
+            "title": "選擇時間",
+            "text": "Please select",
+            "defaultAction": {
+                "type": "uri",
+                "label": "View detail",
+                "uri": "http://example.com/page/123"
+            },
+            "actions": [
+                {
+                    "type": "datetimepicker",
+                    "label": "選擇時間",
+                    "data": "storeId=12345",
+                    "mode": "datetime",
+                    "initial": "2023-04-08t00:00",
+                    "max": "2023-04-24t23:59",
+                    "min": "2023-04-08t00:00"
+                }
+            ]
+        }
+    }
+    return message
+
+
+def getTHSRMessage(searchTime):
+    all_dtime = []
+    target_date = searchTime[:10].replace("-", "/")
+    target_time = searchTime[11:]
+    logger.info('Search date : ' + target_date)
+    logger.info('Search time : ' + target_time)
     form_data = {
         'SearchType': 'S',
         'Lang': 'TW',
         'StartStation': 'NanGang',
         'EndStation': 'ZuoYing',
-        'OutWardSearchDate': '2023/03/28',
-        'OutWardSearchTime': '16:30',
-        'ReturnSearchDate': '2023/03/27',
-        'ReturnSearchTime': '22:30',
+        'OutWardSearchDate': target_date,
+        'OutWardSearchTime': target_time,
+        'ReturnSearchDate': '2023/04/07',
+        'ReturnSearchTime': '21:00',
         'DiscountType': ''
     }
 
@@ -231,10 +269,162 @@ def getTHSRMessage():
         'https://www.thsrc.com.tw/TimeTable/Search', data=form_data)
     response.encoding = "utf-8"
     data = json.loads(response.text)
+    train_start = data['data']['DepartureTable']['Title']['StartStationName']
+    train_end = data['data']['DepartureTable']['Title']['EndStationName']
+    train_depart = data['data']['DepartureTable']['TrainItem'][4]['DepartureTime']
+    train_destination = data['data']['DepartureTable']['TrainItem'][4]['DestinationTime']
 
-    print(data)
+    logger.info(train_start)
+    logger.info(train_end)
+    logger.info(train_depart)
+    logger.info(train_destination)
+    # logger.info(data['data']['DepartureTable']['TrainItem'])
 
-    return data
+    # Append all Train departure time in all_dates in order to compare the time
+    for i in data['data']['DepartureTable']['TrainItem']:
+        all_dtime.append(
+            int([i][0]['DepartureTime'].replace(":", "")))
+    logger.info(all_dtime)
+
+    # Choose the time closest to the user selected time
+    closest_dtime = all_dtime[1]
+    target_time = int(target_time.replace(":", ""))
+    for time in all_dtime:
+        if abs(time - target_time) < abs(closest_dtime - target_time):
+            closest_dtime = time
+    closest_dtime = str(closest_dtime).zfill(4)
+    closest_dtime = closest_dtime[:2] + ":" + closest_dtime[2:]
+    logger.info(closest_dtime)
+
+    # for i in data['data']['DepartureTable']['TrainItem']:
+    #     logger.info('Departure Time:' + [i][0]['DepartureTime'])
+
+    message = {
+        "type": "flex",
+        "altText": "this is a flex message",
+        "contents": {
+            "type": "bubble",
+            "hero": {
+                "type": "image",
+                "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
+                "size": "full",
+                "aspectRatio": "20:13",
+                "aspectMode": "cover",
+                "action": {
+                    "type": "uri",
+                    "uri": "http://linecorp.com/"
+                }
+            },
+            "body": {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "margin": "lg",
+                        "spacing": "sm",
+                        "contents": [
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Start From",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 2,
+                                        "wrap": True
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": train_start,
+                                        "wrap": True,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "End To",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 2,
+                                        "wrap": True
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": train_end,
+                                        "wrap": True,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Departure Time",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 2,
+                                        "wrap": True
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": closest_dtime,
+                                        "wrap": True,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "box",
+                                "layout": "baseline",
+                                "spacing": "sm",
+                                "contents": [
+                                    {
+                                        "type": "text",
+                                        "text": "Destination Time",
+                                        "color": "#aaaaaa",
+                                        "size": "sm",
+                                        "flex": 2,
+                                        "wrap": True
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": train_destination,
+                                        "wrap": True,
+                                        "color": "#666666",
+                                        "size": "sm",
+                                        "flex": 5
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+
+    return message
 
 
 def getNameEmojiMessage():
