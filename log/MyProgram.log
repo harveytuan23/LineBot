@@ -1,11 +1,1 @@
-[INFO][2023-04-09 21:14:42][LINE:74][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'message', 'message': {'type': 'text', 'id': '17950474732499', 'text': '高鐵'}, 'webhookEventId': '01GXK2F4FG8KGCY30GQP5D3KW9', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1681046081853, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': '15d39f32ee374b9a8e0d3a51a24b71fe', 'mode': 'active'}]}
-[INFO][2023-04-09 21:14:53][LINE:74][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'postback', 'postback': {'data': 'storeId=12345', 'params': {'datetime': '2023-04-10T10:00'}}, 'webhookEventId': '01GXK2FF163ZKJV966KPR6YNQB', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1681046092497, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': '76ae3a2379644aab9cf4c5df72ab766c', 'mode': 'active'}]}
-[INFO][2023-04-09 21:14:53][LINE:254][app]: Search date : 2023/04/10
-[INFO][2023-04-09 21:14:53][LINE:255][app]: Search time : 10:00
-[INFO][2023-04-09 21:14:54][LINE:277][app]: 南港
-[INFO][2023-04-09 21:14:54][LINE:278][app]: 左營
-[INFO][2023-04-09 21:14:54][LINE:279][app]: 07:35
-[INFO][2023-04-09 21:14:54][LINE:280][app]: 09:45
-[INFO][2023-04-09 21:14:54][LINE:287][app]: [615, 640, 700, 720, 735, 740, 800, 810, 820, 835, 900, 910, 920, 935, 1000, 1010, 1020, 1035, 1100, 1120, 1135, 1200, 1220, 1235, 1300, 1320, 1335, 1400, 1420, 1435, 1500, 1520, 1535, 1550, 1600, 1610, 1620, 1635, 1640, 1700, 1710, 1720, 1735, 1800, 1810, 1820, 1835, 1840, 1900, 1920, 1935, 2000, 2020, 2035, 2100, 2120, 2130, 2145, 2205]
-[INFO][2023-04-09 21:14:54][LINE:297][app]: 10:00
-[INFO][2023-04-09 21:14:54][LINE:165][app]: 2023-04-10 10:00
+[INFO][2023-04-10 16:53:08][LINE:74][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'message', 'message': {'type': 'text', 'id': '17954868141270', 'text': '高鐵'}, 'webhookEventId': '01GXN5WYBXZFZG51SZF15QHH2Y', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1681116788921, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': 'e02995a92dfc4bfeb25759a828e4fef1', 'mode': 'active'}]}

@@ -86,8 +86,7 @@ def index():
                 elif text == "出去玩囉":
                     payload["messages"] = [getPlayStickerMessage()]
                 elif text == "高鐵":
-                    payload["messages"] = [getTHSRChoose()]
-                    # payload["messages"] = []
+                    payload["messages"] = [getTHSRChooseLocation()]
                 elif text == "台北101":
                     payload["messages"] = [getTaipei101ImageMessage(),
                                            getTaipei101LocationMessage(),
@@ -159,10 +158,7 @@ def index():
             if "params" in events[0]["postback"]:
                 searchTime = events[0]["postback"]["params"]["datetime"].replace(
                     "T", " ")
-                payload["messages"] = [
-                    getTHSRMessage(searchTime)
-                ]
-                logger.info(searchTime)
+                payload["messages"] = [getTHSRMessage(searchTime)]
                 replyMessage(payload)
             else:
                 data = json.loads(events[0]["postback"]["data"])
@@ -215,6 +211,77 @@ def sendTextMessageToMe():
     return 'OK'
 
 
+def getTHSRChooseLocation():
+    message = {
+        "type": "template",
+        "altText": "this is a carousel template",
+        "template": {
+            "type": "carousel",
+            "columns": [
+                {
+                    # "thumbnailImageUrl": "https://example.com/bot/images/item1.jpg",
+                    "imageBackgroundColor": "#FFFFFF",
+                    "title": "請選擇起點",
+                    "text": "description",
+                    "defaultAction": {
+                        "type": "uri",
+                        "label": "View detail",
+                        "uri": "http://example.com/page/123"
+                    },
+                    "actions": [
+                        {
+                            "type": "postback",
+                            "label": "南港",
+                            "data": "action=buy&itemid=111"
+                        },
+                        {
+                            "type": "postback",
+                            "label": "台北",
+                            "data": "action=add&itemid=111"
+                        },
+                        {
+                            "type": "uri",
+                            "label": "板橋",
+                            "uri": "https://www.learncodewithmike.com/2020/07/line-bot-buttons-template-message.html"
+                        }
+                    ]
+                },
+                {
+                    # "thumbnailImageUrl": "https://example.com/bot/images/item2.jpg",
+                    "imageBackgroundColor": "#000000",
+                    "title": "this is menu",
+                    "text": "description",
+                    "defaultAction": {
+                        "type": "uri",
+                        "label": "View detail",
+                        "uri": "http://example.com/page/222"
+                    },
+                    "actions": [
+                        {
+                            "type": "postback",
+                            "label": "桃園",
+                            "data": "action=buy&itemid=222"
+                        },
+                        {
+                            "type": "postback",
+                            "label": "新竹",
+                            "data": "action=add&itemid=222"
+                        },
+                        {
+                            "type": "uri",
+                            "label": "苗栗",
+                            "uri": "http://example.com/page/222"
+                        }
+                    ]
+                }
+            ],
+            "imageAspectRatio": "rectangle",
+            "imageSize": "cover"
+        }
+    }
+    return message
+
+
 def getTHSRChoose():
     message = {
         "type": "template",
@@ -248,7 +315,6 @@ def getTHSRChoose():
 
 
 def getTHSRMessage(searchTime):
-    all_dtime = []
     target_date = searchTime[:10].replace("-", "/")
     target_time = searchTime[11:]
     logger.info('Search date : ' + target_date)
@@ -271,33 +337,28 @@ def getTHSRMessage(searchTime):
     data = json.loads(response.text)
     train_start = data['data']['DepartureTable']['Title']['StartStationName']
     train_end = data['data']['DepartureTable']['Title']['EndStationName']
-    train_depart = data['data']['DepartureTable']['TrainItem'][4]['DepartureTime']
-    train_destination = data['data']['DepartureTable']['TrainItem'][4]['DestinationTime']
-
     logger.info(train_start)
     logger.info(train_end)
-    logger.info(train_depart)
-    logger.info(train_destination)
-    # logger.info(data['data']['DepartureTable']['TrainItem'])
 
-    # Append all Train departure time in all_dates in order to compare the time
-    for i in data['data']['DepartureTable']['TrainItem']:
-        all_dtime.append(
-            int([i][0]['DepartureTime'].replace(":", "")))
-    logger.info(all_dtime)
-
-    # Choose the time closest to the user selected time
-    closest_dtime = all_dtime[1]
+    # Choose the time closest to the user selected departure time
+    closest_dtime = int(data['data']['DepartureTable']['TrainItem'][0]['DepartureTime'].replace(
+        ":", ""))
     target_time = int(target_time.replace(":", ""))
-    for time in all_dtime:
-        if abs(time - target_time) < abs(closest_dtime - target_time):
-            closest_dtime = time
-    closest_dtime = str(closest_dtime).zfill(4)
-    closest_dtime = closest_dtime[:2] + ":" + closest_dtime[2:]
     logger.info(closest_dtime)
+    for i in data['data']['DepartureTable']['TrainItem']:
+        if abs(int([i][0]['DepartureTime'].replace(":", "")) - target_time) < abs(closest_dtime - target_time):
+            closest_dtime = int([i][0]['DepartureTime'].replace(":", ""))
+            closest_atime = int([i][0]['DestinationTime'].replace(":", ""))
 
-    # for i in data['data']['DepartureTable']['TrainItem']:
-    #     logger.info('Departure Time:' + [i][0]['DepartureTime'])
+        logger.info(int([i][0]['DepartureTime'].replace(":", "")))
+        logger.info(int([i][0]['DestinationTime'].replace(":", "")))
+
+    closest_dtime = str(closest_dtime).zfill(4)
+    closest_atime = str(closest_atime).zfill(4)
+    train_dtime = closest_dtime[:2] + ":" + closest_dtime[2:]
+    train_atime = closest_atime[:2] + ":" + closest_atime[2:]
+    logger.info('Train departure time : ' + train_dtime)
+    logger.info('Train arrive time : ' + train_atime)
 
     message = {
         "type": "flex",
@@ -386,7 +447,7 @@ def getTHSRMessage(searchTime):
                                     },
                                     {
                                         "type": "text",
-                                        "text": closest_dtime,
+                                        "text": train_dtime,
                                         "wrap": True,
                                         "color": "#666666",
                                         "size": "sm",
@@ -409,7 +470,7 @@ def getTHSRMessage(searchTime):
                                     },
                                     {
                                         "type": "text",
-                                        "text": train_destination,
+                                        "text": train_atime,
                                         "wrap": True,
                                         "color": "#666666",
                                         "size": "sm",
