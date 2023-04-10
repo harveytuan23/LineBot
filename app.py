@@ -86,7 +86,7 @@ def index():
                 elif text == "出去玩囉":
                     payload["messages"] = [getPlayStickerMessage()]
                 elif text == "高鐵":
-                    payload["messages"] = [getTHSRChooseLocation()]
+                    payload["messages"] = [getTHSRChooseDepartLocation()]
                 elif text == "台北101":
                     payload["messages"] = [getTaipei101ImageMessage(),
                                            getTaipei101LocationMessage(),
@@ -158,7 +158,35 @@ def index():
             if "params" in events[0]["postback"]:
                 searchTime = events[0]["postback"]["params"]["datetime"].replace(
                     "T", " ")
-                payload["messages"] = [getTHSRMessage(searchTime)]
+                logger.info(departStation)
+                logger.info(arriveStation)
+                payload["messages"] = [{
+                    "type": "text",
+                    "text": f"查詢時間為 : {searchTime}"
+                },
+                    getTHSRMessage(searchTime, departStation, arriveStation)]
+                replyMessage(payload)
+
+            elif "data" in events[0]["postback"]:
+                logger.info(events[0]["postback"])
+                firstData = events[0]["postback"]["data"][0:2]
+                messageData = events[0]["postback"]["data"][3:5]
+                engStation = events[0]["postback"]["data"][6:]
+                logger.info(engStation)
+                if firstData == "DL":
+                    departStation = engStation
+                    payload["messages"] = [{
+                        "type": "text",
+                        "text": f"起始點為 : {messageData}"
+                    },
+                        getTHSRChooseArrivedLocation()]
+                elif firstData == "AL":
+                    arriveStation = engStation
+                    payload["messages"] = [{
+                        "type": "text",
+                        "text": f"終點為 : {messageData}"
+                    },
+                        getTHSRChooseTime()]
                 replyMessage(payload)
             else:
                 data = json.loads(events[0]["postback"]["data"])
@@ -211,7 +239,7 @@ def sendTextMessageToMe():
     return 'OK'
 
 
-def getTHSRChooseLocation():
+def getTHSRChooseDepartLocation():
     message = {
         "type": "template",
         "altText": "this is a carousel template",
@@ -232,17 +260,20 @@ def getTHSRChooseLocation():
                         {
                             "type": "postback",
                             "label": "南港",
-                            "data": "action=buy&itemid=111"
+                            "data": "DL&南港&NanGang",
+                            "displayText": "南港",
                         },
                         {
                             "type": "postback",
                             "label": "台北",
-                            "data": "action=add&itemid=111"
+                            "data": "DL&台北&Taipei",
+                            "displayText": "台北",
                         },
                         {
-                            "type": "uri",
+                            "type": "postback",
                             "label": "板橋",
-                            "uri": "https://www.learncodewithmike.com/2020/07/line-bot-buttons-template-message.html"
+                            "data": "DL&板橋&BanQiao",
+                            "displayText": "板橋",
                         }
                     ]
                 },
@@ -282,7 +313,81 @@ def getTHSRChooseLocation():
     return message
 
 
-def getTHSRChoose():
+def getTHSRChooseArrivedLocation():
+    message = {
+        "type": "template",
+        "altText": "this is a carousel template",
+        "template": {
+            "type": "carousel",
+            "columns": [
+                {
+                    # "thumbnailImageUrl": "https://example.com/bot/images/item1.jpg",
+                    "imageBackgroundColor": "#FFFFFF",
+                    "title": "請選擇終點",
+                    "text": "description",
+                    "defaultAction": {
+                        "type": "uri",
+                        "label": "View detail",
+                        "uri": "http://example.com/page/123"
+                    },
+                    "actions": [
+                        {
+                            "type": "postback",
+                            "label": "南港",
+                            "data": "AL&南港&NanGang",
+                            "displayText": "南港",
+                        },
+                        {
+                            "type": "postback",
+                            "label": "台北",
+                            "data": "AL&台北&Taipei",
+                            "displayText": "台北",
+                        },
+                        {
+                            "type": "postback",
+                            "label": "板橋",
+                            "data": "AL&板橋&BanQiao",
+                            "displayText": "板橋",
+                        }
+                    ]
+                },
+                {
+                    # "thumbnailImageUrl": "https://example.com/bot/images/item2.jpg",
+                    "imageBackgroundColor": "#000000",
+                    "title": "this is menu",
+                    "text": "description",
+                    "defaultAction": {
+                        "type": "uri",
+                        "label": "View detail",
+                        "uri": "http://example.com/page/222"
+                    },
+                    "actions": [
+                        {
+                            "type": "postback",
+                            "label": "桃園",
+                            "data": "action=buy&itemid=222"
+                        },
+                        {
+                            "type": "postback",
+                            "label": "新竹",
+                            "data": "action=add&itemid=222"
+                        },
+                        {
+                            "type": "uri",
+                            "label": "苗栗",
+                            "uri": "http://example.com/page/222"
+                        }
+                    ]
+                }
+            ],
+            "imageAspectRatio": "rectangle",
+            "imageSize": "cover"
+        }
+    }
+    return message
+
+
+def getTHSRChooseTime():
     message = {
         "type": "template",
         "altText": "This is a buttons template",
@@ -304,7 +409,7 @@ def getTHSRChoose():
                     "label": "選擇時間",
                     "data": "storeId=12345",
                     "mode": "datetime",
-                    "initial": "2023-04-08t00:00",
+                    "initial": "2023-04-11t08:00",
                     "max": "2023-04-24t23:59",
                     "min": "2023-04-08t00:00"
                 }
@@ -314,7 +419,7 @@ def getTHSRChoose():
     return message
 
 
-def getTHSRMessage(searchTime):
+def getTHSRMessage(searchTime, departStation, arriveStation):
     target_date = searchTime[:10].replace("-", "/")
     target_time = searchTime[11:]
     logger.info('Search date : ' + target_date)
@@ -322,8 +427,8 @@ def getTHSRMessage(searchTime):
     form_data = {
         'SearchType': 'S',
         'Lang': 'TW',
-        'StartStation': 'NanGang',
-        'EndStation': 'ZuoYing',
+        'StartStation': departStation,
+        'EndStation': arriveStation,
         'OutWardSearchDate': target_date,
         'OutWardSearchTime': target_time,
         'ReturnSearchDate': '2023/04/07',
@@ -337,8 +442,8 @@ def getTHSRMessage(searchTime):
     data = json.loads(response.text)
     train_start = data['data']['DepartureTable']['Title']['StartStationName']
     train_end = data['data']['DepartureTable']['Title']['EndStationName']
-    logger.info(train_start)
-    logger.info(train_end)
+    logger.info(departStation)
+    logger.info(arriveStation)
 
     # Choose the time closest to the user selected departure time
     closest_dtime = int(data['data']['DepartureTable']['TrainItem'][0]['DepartureTime'].replace(
@@ -401,7 +506,7 @@ def getTHSRMessage(searchTime):
                                     },
                                     {
                                         "type": "text",
-                                        "text": train_start,
+                                        "text": departStation,
                                         "wrap": True,
                                         "color": "#666666",
                                         "size": "sm",
@@ -424,7 +529,7 @@ def getTHSRMessage(searchTime):
                                     },
                                     {
                                         "type": "text",
-                                        "text": train_end,
+                                        "text": arriveStation,
                                         "wrap": True,
                                         "color": "#666666",
                                         "size": "sm",
@@ -665,6 +770,7 @@ def getImageMessage(originalContentUrl):
 def replyMessage(payload):
     response = requests.post(
         "https://api.line.me/v2/bot/message/reply", headers=HEADER, json=payload)
+    logger.info(response.text)
     print(response.text)
     print('payload =', payload)
     return 'OK'
