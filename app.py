@@ -476,16 +476,16 @@ def getMRTVideoMessage(originalContentUrl=F"{end_point}/static/taipei_101_video.
     return message
 
 
-# def getMRTSoundMessage():
-#     message = dict()
-#     message["type"] = "audio"
-#     message["originalContentUrl"] = F"{end_point}/static/mrt_sound.m4a"
-#     import audioread
-#     with audioread.audio_open('static/mrt_sound.m4a') as f:
-#         # totalsec contains the length in float
-#         totalsec = f.duration
-#     message["duration"] = totalsec * 1000
-#     return message
+def getMRTSoundMessage():
+    message = dict()
+    message["type"] = "audio"
+    message["originalContentUrl"] = F"{end_point}/static/mrt_sound.m4a"
+    import audioread
+    with audioread.audio_open('static/mrt_sound.m4a') as f:
+        # totalsec contains the length in float
+        totalsec = f.duration
+    message["duration"] = totalsec * 1000
+    return message
 
 
 def getTaipei101ImageMessage(originalContentUrl=F"{end_point}/static/taipei_101.jpeg"):
