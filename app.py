@@ -86,7 +86,7 @@ def index():
                 elif text == "出去玩囉":
                     payload["messages"] = [getPlayStickerMessage()]
                 elif text == "高鐵":
-                    payload["messages"] = [getTHSRChooseDepartLocation()]
+                    payload["messages"] = [THSR_choose_start_station()]
                 elif text == "台北101":
                     payload["messages"] = [getTaipei101ImageMessage(),
                                            getTaipei101LocationMessage(),
@@ -155,39 +155,52 @@ def index():
 
         elif events[0]["type"] == "postback":
 
-            if "params" in events[0]["postback"]:
-                searchTime = events[0]["postback"]["params"]["datetime"].replace(
-                    "T", " ")
-                logger.info(departStation)
-                logger.info(arriveStation)
-                payload["messages"] = [{
-                    "type": "text",
-                    "text": f"查詢時間為 : {searchTime}"
-                },
-                    getTHSRMessage(searchTime, departStation, arriveStation)]
-                replyMessage(payload)
-
-            elif "data" in events[0]["postback"]:
-                logger.info(events[0]["postback"])
+            if "data" in events[0]["postback"]:
+                with open("./json/THSR_station_data.json", 'r') as f:
+                    json_data = json.load(f)
                 firstData = events[0]["postback"]["data"][0:2]
                 messageData = events[0]["postback"]["data"][3:5]
                 engStation = events[0]["postback"]["data"][6:]
                 logger.info(engStation)
-                if firstData == "DL":
-                    departStation = engStation
+
+                if firstData == "SS":
+                    json_data["start_station"] = engStation
+
+                    # Save station data to json
+                    with open("./json/THSR_station_data.json", "w") as f:
+                        json.dump(json_data, f)
+
                     payload["messages"] = [{
                         "type": "text",
-                        "text": f"起始點為 : {messageData}"
+                        "text": f"起始點為 : {messageData}",
                     },
-                        getTHSRChooseArrivedLocation()]
-                elif firstData == "AL":
-                    arriveStation = engStation
+                        THSR_choose_end_station()]
+
+                elif firstData == "ES":
+                    json_data["end_station"] = engStation
+
+                    # Save station data to json
+                    with open("./json/THSR_station_data.json", "w") as f:
+                        json.dump(json_data, f)
+
                     payload["messages"] = [{
                         "type": "text",
                         "text": f"終點為 : {messageData}"
                     },
-                        getTHSRChooseTime()]
+                        THSR_choose_time()]
+
+                elif events[0]["postback"]["data"] == "chooseTime":
+                    searchTime = events[0]["postback"]["params"]["datetime"].replace(
+                        "T", " ")
+                    logger.info(json_data["start_station"])
+                    logger.info(json_data["end_station"])
+                    payload["messages"] = [{
+                        "type": "text",
+                        "text": f"查詢時間為 : {searchTime}"
+                    },
+                        THSR_result(searchTime)]
                 replyMessage(payload)
+
             else:
                 data = json.loads(events[0]["postback"]["data"])
                 logger.info(data)
@@ -239,187 +252,30 @@ def sendTextMessageToMe():
     return 'OK'
 
 
-def getTHSRChooseDepartLocation():
-    message = {
-        "type": "template",
-        "altText": "this is a carousel template",
-        "template": {
-            "type": "carousel",
-            "columns": [
-                {
-                    # "thumbnailImageUrl": "https://example.com/bot/images/item1.jpg",
-                    "imageBackgroundColor": "#FFFFFF",
-                    "title": "請選擇起點",
-                    "text": "description",
-                    "defaultAction": {
-                        "type": "uri",
-                        "label": "View detail",
-                        "uri": "http://example.com/page/123"
-                    },
-                    "actions": [
-                        {
-                            "type": "postback",
-                            "label": "南港",
-                            "data": "DL&南港&NanGang",
-                            "displayText": "南港",
-                        },
-                        {
-                            "type": "postback",
-                            "label": "台北",
-                            "data": "DL&台北&Taipei",
-                            "displayText": "台北",
-                        },
-                        {
-                            "type": "postback",
-                            "label": "板橋",
-                            "data": "DL&板橋&BanQiao",
-                            "displayText": "板橋",
-                        }
-                    ]
-                },
-                {
-                    # "thumbnailImageUrl": "https://example.com/bot/images/item2.jpg",
-                    "imageBackgroundColor": "#000000",
-                    "title": "this is menu",
-                    "text": "description",
-                    "defaultAction": {
-                        "type": "uri",
-                        "label": "View detail",
-                        "uri": "http://example.com/page/222"
-                    },
-                    "actions": [
-                        {
-                            "type": "postback",
-                            "label": "桃園",
-                            "data": "action=buy&itemid=222"
-                        },
-                        {
-                            "type": "postback",
-                            "label": "新竹",
-                            "data": "action=add&itemid=222"
-                        },
-                        {
-                            "type": "uri",
-                            "label": "苗栗",
-                            "uri": "http://example.com/page/222"
-                        }
-                    ]
-                }
-            ],
-            "imageAspectRatio": "rectangle",
-            "imageSize": "cover"
-        }
-    }
+def THSR_choose_start_station():
+    with open("./json/THSR_choose_start_station.json", 'r', encoding='utf-8') as f:
+        message = json.load(f)
     return message
 
 
-def getTHSRChooseArrivedLocation():
-    message = {
-        "type": "template",
-        "altText": "this is a carousel template",
-        "template": {
-            "type": "carousel",
-            "columns": [
-                {
-                    # "thumbnailImageUrl": "https://example.com/bot/images/item1.jpg",
-                    "imageBackgroundColor": "#FFFFFF",
-                    "title": "請選擇終點",
-                    "text": "description",
-                    "defaultAction": {
-                        "type": "uri",
-                        "label": "View detail",
-                        "uri": "http://example.com/page/123"
-                    },
-                    "actions": [
-                        {
-                            "type": "postback",
-                            "label": "南港",
-                            "data": "AL&南港&NanGang",
-                            "displayText": "南港",
-                        },
-                        {
-                            "type": "postback",
-                            "label": "台北",
-                            "data": "AL&台北&Taipei",
-                            "displayText": "台北",
-                        },
-                        {
-                            "type": "postback",
-                            "label": "板橋",
-                            "data": "AL&板橋&BanQiao",
-                            "displayText": "板橋",
-                        }
-                    ]
-                },
-                {
-                    # "thumbnailImageUrl": "https://example.com/bot/images/item2.jpg",
-                    "imageBackgroundColor": "#000000",
-                    "title": "this is menu",
-                    "text": "description",
-                    "defaultAction": {
-                        "type": "uri",
-                        "label": "View detail",
-                        "uri": "http://example.com/page/222"
-                    },
-                    "actions": [
-                        {
-                            "type": "postback",
-                            "label": "桃園",
-                            "data": "action=buy&itemid=222"
-                        },
-                        {
-                            "type": "postback",
-                            "label": "新竹",
-                            "data": "action=add&itemid=222"
-                        },
-                        {
-                            "type": "uri",
-                            "label": "苗栗",
-                            "uri": "http://example.com/page/222"
-                        }
-                    ]
-                }
-            ],
-            "imageAspectRatio": "rectangle",
-            "imageSize": "cover"
-        }
-    }
+def THSR_choose_end_station():
+    with open("./json/THSR_choose_end_station.json", 'r', encoding='utf-8') as f:
+        message = json.load(f)
     return message
 
 
-def getTHSRChooseTime():
-    message = {
-        "type": "template",
-        "altText": "This is a buttons template",
-        "template": {
-            "type": "buttons",
-            "imageAspectRatio": "rectangle",
-            "imageSize": "cover",
-            "imageBackgroundColor": "#FFFFFF",
-            "title": "選擇時間",
-            "text": "Please select",
-            "defaultAction": {
-                "type": "uri",
-                "label": "View detail",
-                "uri": "http://example.com/page/123"
-            },
-            "actions": [
-                {
-                    "type": "datetimepicker",
-                    "label": "選擇時間",
-                    "data": "storeId=12345",
-                    "mode": "datetime",
-                    "initial": "2023-04-11t08:00",
-                    "max": "2023-04-24t23:59",
-                    "min": "2023-04-08t00:00"
-                }
-            ]
-        }
-    }
+def THSR_choose_time():
+    with open("./json/THSR_choose_time.json", 'r', encoding='utf-8') as f:
+        message = json.load(f)
     return message
 
 
-def getTHSRMessage(searchTime, departStation, arriveStation):
+def THSR_result(searchTime):
+    # Read station data
+    with open("./json/THSR_station_data.json") as f:
+        json_data = json.load(f)
+    logger.info(json_data["start_station"])
+    logger.info(json_data["end_station"])
     target_date = searchTime[:10].replace("-", "/")
     target_time = searchTime[11:]
     logger.info('Search date : ' + target_date)
@@ -427,8 +283,8 @@ def getTHSRMessage(searchTime, departStation, arriveStation):
     form_data = {
         'SearchType': 'S',
         'Lang': 'TW',
-        'StartStation': departStation,
-        'EndStation': arriveStation,
+        'StartStation': json_data["start_station"],
+        'EndStation': json_data["end_station"],
         'OutWardSearchDate': target_date,
         'OutWardSearchTime': target_time,
         'ReturnSearchDate': '2023/04/07',
@@ -440,156 +296,35 @@ def getTHSRMessage(searchTime, departStation, arriveStation):
         'https://www.thsrc.com.tw/TimeTable/Search', data=form_data)
     response.encoding = "utf-8"
     data = json.loads(response.text)
-    train_start = data['data']['DepartureTable']['Title']['StartStationName']
-    train_end = data['data']['DepartureTable']['Title']['EndStationName']
-    logger.info(departStation)
-    logger.info(arriveStation)
 
     # Choose the time closest to the user selected departure time
-    closest_dtime = int(data['data']['DepartureTable']['TrainItem'][0]['DepartureTime'].replace(
+    closest_start_time = int(data['data']['DepartureTable']['TrainItem'][0]['DepartureTime'].replace(
         ":", ""))
     target_time = int(target_time.replace(":", ""))
-    logger.info(closest_dtime)
+    logger.info(closest_start_time)
     for i in data['data']['DepartureTable']['TrainItem']:
-        if abs(int([i][0]['DepartureTime'].replace(":", "")) - target_time) < abs(closest_dtime - target_time):
-            closest_dtime = int([i][0]['DepartureTime'].replace(":", ""))
-            closest_atime = int([i][0]['DestinationTime'].replace(":", ""))
+        if abs(int([i][0]['DepartureTime'].replace(":", "")) - target_time) < abs(closest_start_time - target_time):
+            closest_start_time = int([i][0]['DepartureTime'].replace(":", ""))
+            closest_end_time = int([i][0]['DestinationTime'].replace(":", ""))
 
         logger.info(int([i][0]['DepartureTime'].replace(":", "")))
         logger.info(int([i][0]['DestinationTime'].replace(":", "")))
 
-    closest_dtime = str(closest_dtime).zfill(4)
-    closest_atime = str(closest_atime).zfill(4)
-    train_dtime = closest_dtime[:2] + ":" + closest_dtime[2:]
-    train_atime = closest_atime[:2] + ":" + closest_atime[2:]
-    logger.info('Train departure time : ' + train_dtime)
-    logger.info('Train arrive time : ' + train_atime)
+    closest_start_time = str(closest_start_time).zfill(4)
+    closest_end_time = str(closest_end_time).zfill(4)
+    start_time = closest_start_time[:2] + ":" + closest_start_time[2:]
+    end_time = closest_end_time[:2] + ":" + closest_end_time[2:]
+    logger.info('Train departure time : ' + start_time)
+    logger.info('Train arrive time : ' + end_time)
 
-    message = {
-        "type": "flex",
-        "altText": "this is a flex message",
-        "contents": {
-            "type": "bubble",
-            "hero": {
-                "type": "image",
-                "url": "https://scdn.line-apps.com/n/channel_devcenter/img/fx/01_1_cafe.png",
-                "size": "full",
-                "aspectRatio": "20:13",
-                "aspectMode": "cover",
-                "action": {
-                    "type": "uri",
-                    "uri": "http://linecorp.com/"
-                }
-            },
-            "body": {
-                "type": "box",
-                "layout": "vertical",
-                "contents": [
-                    {
-                        "type": "box",
-                        "layout": "vertical",
-                        "margin": "lg",
-                        "spacing": "sm",
-                        "contents": [
-                            {
-                                "type": "box",
-                                "layout": "baseline",
-                                "spacing": "sm",
-                                "contents": [
-                                    {
-                                        "type": "text",
-                                        "text": "Start From",
-                                        "color": "#aaaaaa",
-                                        "size": "sm",
-                                        "flex": 2,
-                                        "wrap": True
-                                    },
-                                    {
-                                        "type": "text",
-                                        "text": departStation,
-                                        "wrap": True,
-                                        "color": "#666666",
-                                        "size": "sm",
-                                        "flex": 5
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "box",
-                                "layout": "baseline",
-                                "spacing": "sm",
-                                "contents": [
-                                    {
-                                        "type": "text",
-                                        "text": "End To",
-                                        "color": "#aaaaaa",
-                                        "size": "sm",
-                                        "flex": 2,
-                                        "wrap": True
-                                    },
-                                    {
-                                        "type": "text",
-                                        "text": arriveStation,
-                                        "wrap": True,
-                                        "color": "#666666",
-                                        "size": "sm",
-                                        "flex": 5
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "box",
-                                "layout": "baseline",
-                                "spacing": "sm",
-                                "contents": [
-                                    {
-                                        "type": "text",
-                                        "text": "Departure Time",
-                                        "color": "#aaaaaa",
-                                        "size": "sm",
-                                        "flex": 2,
-                                        "wrap": True
-                                    },
-                                    {
-                                        "type": "text",
-                                        "text": train_dtime,
-                                        "wrap": True,
-                                        "color": "#666666",
-                                        "size": "sm",
-                                        "flex": 5
-                                    }
-                                ]
-                            },
-                            {
-                                "type": "box",
-                                "layout": "baseline",
-                                "spacing": "sm",
-                                "contents": [
-                                    {
-                                        "type": "text",
-                                        "text": "Destination Time",
-                                        "color": "#aaaaaa",
-                                        "size": "sm",
-                                        "flex": 2,
-                                        "wrap": True
-                                    },
-                                    {
-                                        "type": "text",
-                                        "text": train_atime,
-                                        "wrap": True,
-                                        "color": "#666666",
-                                        "size": "sm",
-                                        "flex": 5
-                                    }
-                                ]
-                            }
-                        ]
-                    }
-                ]
-            }
-        }
-    }
-
+    with open("./json/THSR_result.json", 'r', encoding='utf-8') as f:
+        message = json.load(f)
+    message["contents"]["body"]["contents"][0]["contents"][0]["contents"][1]["text"] = json_data["start_station"]
+    message["contents"]["body"]["contents"][0]["contents"][1]["contents"][1]["text"] = json_data["end_station"]
+    message["contents"]["body"]["contents"][0]["contents"][2]["contents"][1]["text"] = start_time
+    message["contents"]["body"]["contents"][0]["contents"][3]["contents"][1]["text"] = end_time
+    with open("./json/THSR_result.json", 'w', encoding='utf-8') as f:
+        json.dump(message, f, ensure_ascii=False)
     return message
 
 

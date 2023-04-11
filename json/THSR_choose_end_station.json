@@ -1,0 +1,68 @@
+{
+    "type": "template",
+    "altText": "this is a carousel template",
+    "template": {
+        "type": "carousel",
+        "columns": [
+            {
+                "imageBackgroundColor": "#FFFFFF",
+                "title": "請選擇終點",
+                "text": "description",
+                "defaultAction": {
+                    "type": "uri",
+                    "label": "View detail",
+                    "uri": "http://example.com/page/123"
+                },
+                "actions": [
+                    {
+                        "type": "postback",
+                        "label": "南港",
+                        "data": "ES&南港&NanGang",
+                        "displayText": "南港"
+                    },
+                    {
+                        "type": "postback",
+                        "label": "台北",
+                        "data": "ES&台北&TaiPei",
+                        "displayText": "台北"
+                    },
+                    {
+                        "type": "postback",
+                        "label": "板橋",
+                        "data": "ES&板橋&BanQiao",
+                        "displayText": "板橋"
+                    }
+                ]
+            },
+            {
+                "imageBackgroundColor": "#000000",
+                "title": "this is menu",
+                "text": "description",
+                "defaultAction": {
+                    "type": "uri",
+                    "label": "View detail",
+                    "uri": "http://example.com/page/222"
+                },
+                "actions": [
+                    {
+                        "type": "postback",
+                        "label": "桃園",
+                        "data": "action=buy&itemid=222"
+                    },
+                    {
+                        "type": "postback",
+                        "label": "新竹",
+                        "data": "action=add&itemid=222"
+                    },
+                    {
+                        "type": "uri",
+                        "label": "苗栗",
+                        "uri": "http://example.com/page/222"
+                    }
+                ]
+            }
+        ],
+        "imageAspectRatio": "rectangle",
+        "imageSize": "cover"
+    }
+}
