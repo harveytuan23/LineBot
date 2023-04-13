@@ -1,10 +1,11 @@
 from __future__ import unicode_literals
 from urllib import parse
-import string
 from flask import Flask, request, abort, render_template
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from datetime import datetime
+import string
 import requests
 import json
 import configparser
@@ -267,6 +268,8 @@ def THSR_choose_end_station():
 def THSR_choose_time():
     with open("./json/THSR_choose_time.json", 'r', encoding='utf-8') as f:
         message = json.load(f)
+    now_time = datetime.now().strftime("%Y-%m-%dt%H:%M")
+    message["template"]["actions"][0]["initial"] = now_time
     return message
 
 
