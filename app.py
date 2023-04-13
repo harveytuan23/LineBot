@@ -275,6 +275,10 @@ def THSR_choose_time():
 
 def THSR_result(searchTime):
     # Read station data
+    closest_start_time = 0
+    closest_end_time = 0
+    five_trains_list = [[123, 456], [123, 456],
+                        [123, 456], [123, 456], [123, 456],]
     with open("./json/THSR_station_data.json") as f:
         json_data = json.load(f)
     logger.info(json_data["start_station"])
@@ -299,33 +303,44 @@ def THSR_result(searchTime):
         'https://www.thsrc.com.tw/TimeTable/Search', data=form_data)
     response.encoding = "utf-8"
     data = json.loads(response.text)
+    num_of_train = len(data['data']['DepartureTable']['TrainItem'])
+    logger.info(num_of_train)
 
     # Choose the time closest to the user selected departure time
-    closest_start_time = int(data['data']['DepartureTable']['TrainItem'][0]['DepartureTime'].replace(
-        ":", ""))
     target_time = int(target_time.replace(":", ""))
+    for i in range(num_of_train):
+        if abs(int(data['data']['DepartureTable']['TrainItem'][i]['DepartureTime'].replace(
+                ":", "")) - target_time) < abs(closest_start_time - target_time):
+            closest_start_time = int(data['data']['DepartureTable']['TrainItem'][i]['DepartureTime'].replace(
+                ":", ""))
+            closest_end_time = int(data['data']['DepartureTable']['TrainItem'][i]['DestinationTime'].replace(
+                ":", ""))
+            closest_i = i
+
     logger.info(closest_start_time)
-    for i in data['data']['DepartureTable']['TrainItem']:
-        if abs(int([i][0]['DepartureTime'].replace(":", "")) - target_time) < abs(closest_start_time - target_time):
-            closest_start_time = int([i][0]['DepartureTime'].replace(":", ""))
-            closest_end_time = int([i][0]['DestinationTime'].replace(":", ""))
+    logger.info(closest_end_time)
+    logger.info(closest_i)
 
-        logger.info(int([i][0]['DepartureTime'].replace(":", "")))
-        logger.info(int([i][0]['DestinationTime'].replace(":", "")))
+    # Select five the following num of train and append into time_list
+    for j in range(0, 5):
+        five_trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
+            ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
+            ":", "").zfill(4)[2:]
+        five_trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
+            ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
+            ":", "").zfill(4)[2:]
+        closest_i += 1
 
-    closest_start_time = str(closest_start_time).zfill(4)
-    closest_end_time = str(closest_end_time).zfill(4)
-    start_time = closest_start_time[:2] + ":" + closest_start_time[2:]
-    end_time = closest_end_time[:2] + ":" + closest_end_time[2:]
-    logger.info('Train departure time : ' + start_time)
-    logger.info('Train arrive time : ' + end_time)
+    logger.info(five_trains_list)
 
     with open("./json/THSR_result.json", 'r', encoding='utf-8') as f:
         message = json.load(f)
-    message["contents"]["body"]["contents"][0]["contents"][0]["contents"][1]["text"] = json_data["start_station"]
-    message["contents"]["body"]["contents"][0]["contents"][1]["contents"][1]["text"] = json_data["end_station"]
-    message["contents"]["body"]["contents"][0]["contents"][2]["contents"][1]["text"] = start_time
-    message["contents"]["body"]["contents"][0]["contents"][3]["contents"][1]["text"] = end_time
+    for i in range(5):
+        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][0]["contents"][1]["text"] = json_data["start_station"]
+        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][1]["contents"][1]["text"] = json_data["end_station"]
+        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][2]["contents"][1]["text"] = five_trains_list[i][0]
+        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][3]["contents"][1]["text"] = five_trains_list[i][1]
+
     return message
 
 
