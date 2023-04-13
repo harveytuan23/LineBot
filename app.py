@@ -326,8 +326,6 @@ def THSR_result(searchTime):
     message["contents"]["body"]["contents"][0]["contents"][1]["contents"][1]["text"] = json_data["end_station"]
     message["contents"]["body"]["contents"][0]["contents"][2]["contents"][1]["text"] = start_time
     message["contents"]["body"]["contents"][0]["contents"][3]["contents"][1]["text"] = end_time
-    with open("./json/THSR_result.json", 'w', encoding='utf-8') as f:
-        json.dump(message, f, ensure_ascii=False)
     return message
 
 
