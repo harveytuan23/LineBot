@@ -173,22 +173,29 @@ def index():
 
                     payload["messages"] = [{
                         "type": "text",
-                        "text": f"起始點為 : {messageData}",
+                        "text": f"出發站為 : {messageData}",
                     },
                         THSR_choose_end_station()]
 
                 elif firstData == "ES":
                     json_data["end_station"] = engStation
+                    if json_data["end_station"] == json_data["start_station"]:
+                        logger.info("error")
+                        payload["messages"] = [{
+                            "type": "text",
+                            "text": "出發站不能等於到達站"
+                        },
+                            THSR_choose_end_station()]
+                    else:
+                        # Save station data to json
+                        with open("./json/THSR_station_data.json", "w") as f:
+                            json.dump(json_data, f)
 
-                    # Save station data to json
-                    with open("./json/THSR_station_data.json", "w") as f:
-                        json.dump(json_data, f)
-
-                    payload["messages"] = [{
-                        "type": "text",
-                        "text": f"終點為 : {messageData}"
-                    },
-                        THSR_choose_time()]
+                        payload["messages"] = [{
+                            "type": "text",
+                            "text": f"終點站為 : {messageData}"
+                        },
+                            THSR_choose_time()]
 
                 elif events[0]["postback"]["data"] == "chooseTime":
                     searchTime = events[0]["postback"]["params"]["datetime"].replace(
@@ -262,6 +269,7 @@ def THSR_choose_start_station():
 def THSR_choose_end_station():
     with open("./json/THSR_choose_end_station.json", 'r', encoding='utf-8') as f:
         message = json.load(f)
+
     return message
 
 
@@ -277,8 +285,7 @@ def THSR_result(searchTime):
     # Read station data
     closest_start_time = 0
     closest_end_time = 0
-    five_trains_list = [[123, 456], [123, 456],
-                        [123, 456], [123, 456], [123, 456],]
+    trains_list = []
     with open("./json/THSR_station_data.json") as f:
         json_data = json.load(f)
     logger.info(json_data["start_station"])
@@ -321,25 +328,42 @@ def THSR_result(searchTime):
     logger.info(closest_end_time)
     logger.info(closest_i)
 
-    # Select five the following num of train and append into time_list
-    for j in range(0, 5):
-        five_trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
-            ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
-            ":", "").zfill(4)[2:]
-        five_trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
-            ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
-            ":", "").zfill(4)[2:]
-        closest_i += 1
+    # Choose the train that matches the time and append into time_list
+    # if train < 5, append corresponding amount of trains into time_list
+    if num_of_train - closest_i < 5:
+        for j in range(0, num_of_train - closest_i):
+            trains_list.append([0, 0])
+            trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
+                ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
+                ":", "").zfill(4)[2:]
+            trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
+                ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
+                ":", "").zfill(4)[2:]
+            closest_i += 1
+    # if train >= 5, append only five closest start time into time_list
+    else:
+        for j in range(0, 5):
+            trains_list.append([0, 0])
+            trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
+                ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
+                ":", "").zfill(4)[2:]
+            trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
+                ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
+                ":", "").zfill(4)[2:]
+            closest_i += 1
 
-    logger.info(five_trains_list)
+    logger.info(f"total train : {trains_list}")
+    logger.info(f"num of train : {len(trains_list)}")
+    num_of_train_list = len(trains_list)
 
-    with open("./json/THSR_result.json", 'r', encoding='utf-8') as f:
+    # Read corresponding json carousel template according to the num of train
+    with open(f"./json/THSR_result_{num_of_train_list}data.json", 'r', encoding='utf-8') as f:
         message = json.load(f)
-    for i in range(5):
+    for i in range(len(trains_list)):
         message["contents"]["contents"][i]["body"]["contents"][0]["contents"][0]["contents"][1]["text"] = json_data["start_station"]
         message["contents"]["contents"][i]["body"]["contents"][0]["contents"][1]["contents"][1]["text"] = json_data["end_station"]
-        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][2]["contents"][1]["text"] = five_trains_list[i][0]
-        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][3]["contents"][1]["text"] = five_trains_list[i][1]
+        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][2]["contents"][1]["text"] = trains_list[i][0]
+        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][3]["contents"][1]["text"] = trains_list[i][1]
 
     return message
 

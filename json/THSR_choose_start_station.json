@@ -7,7 +7,7 @@
             {
                 "imageBackgroundColor": "#FFFFFF",
                 "title": "請選擇起點",
-                "text": "description",
+                "text": " ",
                 "defaultAction": {
                     "type": "uri",
                     "label": "View detail",
