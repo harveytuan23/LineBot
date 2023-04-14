@@ -1,0 +1,15 @@
+[INFO][2023-04-14 13:01:11][LINE:75][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'postback', 'postback': {'data': 'chooseTime', 'params': {'datetime': '2023-04-14T13:00'}}, 'webhookEventId': '01GXZ2740QJKBD81KNACC5RRP3', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1681448472097, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': '89b54de5eb424a9c8c6e27194c65433c', 'mode': 'active'}]}
+[INFO][2023-04-14 13:01:11][LINE:165][app]: Time
+[INFO][2023-04-14 13:01:11][LINE:203][app]: NanGang
+[INFO][2023-04-14 13:01:11][LINE:204][app]: BanQiao
+[INFO][2023-04-14 13:01:11][LINE:291][app]: NanGang
+[INFO][2023-04-14 13:01:11][LINE:292][app]: BanQiao
+[INFO][2023-04-14 13:01:11][LINE:295][app]: Search date : 2023/04/14
+[INFO][2023-04-14 13:01:11][LINE:296][app]: Search time : 13:00
+[INFO][2023-04-14 13:01:13][LINE:314][app]: 76
+[INFO][2023-04-14 13:01:13][LINE:327][app]: 1300
+[INFO][2023-04-14 13:01:13][LINE:328][app]: 1318
+[INFO][2023-04-14 13:01:13][LINE:329][app]: 26
+[INFO][2023-04-14 13:01:13][LINE:355][app]: total train : [['13:00', '13:18'], ['13:10', '13:28'], ['13:20', '13:38'], ['13:35', '13:54'], ['14:00', '14:18']]
+[INFO][2023-04-14 13:01:13][LINE:356][app]: num of train : 5
+[INFO][2023-04-14 13:01:13][LINE:548][app]: {}
