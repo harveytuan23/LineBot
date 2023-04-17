@@ -7,7 +7,7 @@
         "imageSize": "cover",
         "imageBackgroundColor": "#FFFFFF",
         "title": "選擇時間",
-        "text": "Please select",
+        "text": " ",
         "defaultAction": {
             "type": "uri",
             "label": "View detail",

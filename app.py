@@ -329,7 +329,7 @@ def THSR_result(searchTime):
     logger.info(closest_i)
 
     # Choose the train that matches the time and append into time_list
-    # if train < 5, append corresponding amount of trains into time_list
+    # if num of train < 5, append corresponding amount of trains into time_list
     if num_of_train - closest_i < 5:
         for j in range(0, num_of_train - closest_i):
             trains_list.append([0, 0])
@@ -340,7 +340,7 @@ def THSR_result(searchTime):
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[2:]
             closest_i += 1
-    # if train >= 5, append only five closest start time into time_list
+    # if num of train >= 5, append only five closest start time into time_list
     else:
         for j in range(0, 5):
             trains_list.append([0, 0])
