@@ -1,0 +1,195 @@
+{
+    "type": "bubble",
+    "size": "mega",
+    "header": {
+        "type": "box",
+        "layout": "horizontal",
+        "contents": [
+            {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "FROM",
+                        "color": "#ffffff66",
+                        "size": "sm"
+                    },
+                    {
+                        "type": "text",
+                        "text": "南港站",
+                        "color": "#ffffff",
+                        "size": "xl",
+                        "flex": 4,
+                        "weight": "bold"
+                    }
+                ]
+            },
+            {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "TO",
+                        "color": "#ffffff66",
+                        "size": "sm"
+                    },
+                    {
+                        "type": "text",
+                        "text": "板橋站",
+                        "color": "#ffffff",
+                        "size": "xl",
+                        "flex": 4,
+                        "weight": "bold"
+                    }
+                ]
+            }
+        ],
+        "paddingAll": "20px",
+        "backgroundColor": "#e65c00",
+        "spacing": "md",
+        "height": "100px",
+        "paddingTop": "22px"
+    },
+    "body": {
+        "type": "box",
+        "layout": "vertical",
+        "contents": [
+            {
+                "type": "box",
+                "layout": "vertical",
+                "contents": [
+                    {
+                        "type": "text",
+                        "text": "hello, world"
+                    }
+                ]
+            },
+            {
+                "type": "text",
+                "text": "2023/04/07",
+                "color": "#b7b7b7",
+                "size": "sm",
+                "align": "center"
+            },
+            {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "18:16",
+                                "size": "xxl",
+                                "align": "center"
+                            }
+                        ],
+                        "flex": 1
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "image",
+                                "size": "40px",
+                                "flex": 0,
+                                "url": "https://github.com/harveytuan23/LineBot/blob/main/static/right-arrow.png?raw=true"
+                            }
+                        ],
+                        "flex": 1
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "18:25",
+                                "size": "xxl",
+                                "align": "center"
+                            }
+                        ],
+                        "flex": 1
+                    }
+                ]
+            },
+            {
+                "type": "text",
+                "text": "總時間: 36分",
+                "color": "#6C6C6C",
+                "size": "xs"
+            },
+            {
+                "type": "separator",
+                "margin": "md"
+            },
+            {
+                "type": "text",
+                "text": "2023/04/07",
+                "color": "#b7b7b7",
+                "size": "sm",
+                "align": "center"
+            },
+            {
+                "type": "box",
+                "layout": "horizontal",
+                "contents": [
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "18:16",
+                                "size": "xxl",
+                                "align": "center"
+                            }
+                        ],
+                        "flex": 1
+                    },
+                    {
+                        "type": "box",
+                        "layout": "vertical",
+                        "contents": [
+                            {
+                                "type": "image",
+                                "size": "40px",
+                                "flex": 0,
+                                "url": "https://github.com/harveytuan23/LineBot/blob/main/static/right-arrow.png?raw=true"
+                            }
+                        ],
+                        "flex": 1
+                    },
+                    {
+                        "type": "box",
+                        "layout": "horizontal",
+                        "contents": [
+                            {
+                                "type": "text",
+                                "text": "18:25",
+                                "size": "xxl",
+                                "align": "center"
+                            }
+                        ],
+                        "flex": 1
+                    }
+                ]
+            },
+            {
+                "type": "text",
+                "text": "總時間: 36分",
+                "color": "#6C6C6C",
+                "size": "xs"
+            },
+            {
+                "type": "separator",
+                "margin": "md"
+            }
+        ]
+    }
+}
