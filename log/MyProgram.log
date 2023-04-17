@@ -1,0 +1,23 @@
+[INFO][2023-04-17 10:10:47][LINE:75][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'message', 'message': {'type': 'text', 'id': '17991869004414', 'text': '°ªÅK'}, 'webhookEventId': '01GY6FNA4DK7A4CCW05W0DEHH2', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1681697449705, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': '20441798d7394ae9aac010e5059fb345', 'mode': 'active'}]}
+[INFO][2023-04-17 10:10:48][LINE:548][app]: {}
+[INFO][2023-04-17 10:13:44][LINE:75][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'postback', 'postback': {'data': 'SS&«n´ä&NanGang'}, 'webhookEventId': '01GY6FTPJ0FPSCKDB0D0P94A3N', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1681697626674, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': 'f61cf2a02ae84a2193f024151801adde', 'mode': 'active'}]}
+[INFO][2023-04-17 10:13:44][LINE:165][app]: NanGang
+[INFO][2023-04-17 10:13:44][LINE:548][app]: {}
+[INFO][2023-04-17 10:13:49][LINE:75][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'postback', 'postback': {'data': 'ES&ªO¾ô&BanQiao'}, 'webhookEventId': '01GY6FTVM5Y6ME9BVG8JBQFV5A', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1681697631375, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': 'cdfc25d71ab34238bceb1b21b61ff63e', 'mode': 'active'}]}
+[INFO][2023-04-17 10:13:49][LINE:165][app]: BanQiao
+[INFO][2023-04-17 10:13:49][LINE:548][app]: {}
+[INFO][2023-04-17 10:14:02][LINE:75][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'postback', 'postback': {'data': 'chooseTime', 'params': {'datetime': '2023-04-17T17:13'}}, 'webhookEventId': '01GY6FV8BXE4Q985Y48NN20GC4', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1681697644422, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': '249abc63aca44b33ae8c3f8dc894f7e5', 'mode': 'active'}]}
+[INFO][2023-04-17 10:14:02][LINE:165][app]: Time
+[INFO][2023-04-17 10:14:02][LINE:203][app]: NanGang
+[INFO][2023-04-17 10:14:02][LINE:204][app]: BanQiao
+[INFO][2023-04-17 10:14:02][LINE:291][app]: NanGang
+[INFO][2023-04-17 10:14:02][LINE:292][app]: BanQiao
+[INFO][2023-04-17 10:14:02][LINE:295][app]: Search date : 2023/04/17
+[INFO][2023-04-17 10:14:02][LINE:296][app]: Search time : 17:13
+[INFO][2023-04-17 10:14:04][LINE:314][app]: 60
+[INFO][2023-04-17 10:14:04][LINE:327][app]: 1710
+[INFO][2023-04-17 10:14:04][LINE:328][app]: 1728
+[INFO][2023-04-17 10:14:04][LINE:329][app]: 40
+[INFO][2023-04-17 10:14:04][LINE:355][app]: total train : [['17:10', '17:28'], ['17:20', '17:38'], ['17:35', '17:54'], ['18:00', '18:18'], ['18:10', '18:28']]
+[INFO][2023-04-17 10:14:04][LINE:356][app]: num of train : 5
+[INFO][2023-04-17 10:14:04][LINE:548][app]: {}
