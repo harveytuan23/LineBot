@@ -332,22 +332,24 @@ def THSR_result(searchTime):
     # if num of train < 5, append corresponding amount of trains into time_list
     if num_of_train - closest_i < 5:
         for j in range(0, num_of_train - closest_i):
-            trains_list.append([0, 0])
-            trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
+            trains_list.append([0, 0, 0])
+            trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['TrainNumber']
+            trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
                 ":", "").zfill(4)[2:]
-            trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
+            trains_list[j][2] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[2:]
             closest_i += 1
     # if num of train >= 5, append only five closest start time into time_list
     else:
         for j in range(0, 5):
-            trains_list.append([0, 0])
-            trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
+            trains_list.append([0, 0, 0])
+            trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['TrainNumber']
+            trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
                 ":", "").zfill(4)[2:]
-            trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
+            trains_list[j][2] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[2:]
             closest_i += 1
@@ -355,15 +357,24 @@ def THSR_result(searchTime):
     logger.info(f"total train : {trains_list}")
     logger.info(f"num of train : {len(trains_list)}")
     num_of_train_list = len(trains_list)
+    target_time = str(target_time)
 
     # Read corresponding json carousel template according to the num of train
-    with open(f"./json/THSR_result_{num_of_train_list}data.json", 'r', encoding='utf-8') as f:
+    with open(f"./json/THSR_result_{num_of_train_list}_data.json", 'r', encoding='utf-8') as f:
         message = json.load(f)
-    for i in range(len(trains_list)):
-        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][0]["contents"][1]["text"] = json_data["start_station"]
-        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][1]["contents"][1]["text"] = json_data["end_station"]
-        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][2]["contents"][1]["text"] = trains_list[i][0]
-        message["contents"]["contents"][i]["body"]["contents"][0]["contents"][3]["contents"][1]["text"] = trains_list[i][1]
+
+    message["contents"]["header"]["contents"][0]["contents"][0]["contents"][1]["text"] = target_date
+    message["contents"]["header"]["contents"][0]["contents"][1]["contents"][1]["text"] = target_time[:2] + ":" + target_time[2:]
+    message["contents"]["header"]["contents"][1]["contents"][0]["contents"][1]["text"] = json_data["start_station"]
+    message["contents"]["header"]["contents"][1]["contents"][1]["contents"][1]["text"] = json_data["end_station"]
+
+    for i in range(0, len(trains_list)):
+        message["contents"]["body"]["contents"][3*i][
+            "contents"][0]["text"] = f'車次 {trains_list[i][0]}'
+        message["contents"]["body"]["contents"][3*i +
+                                                1]["contents"][0]["contents"][0]["text"] = trains_list[i][1]
+        message["contents"]["body"]["contents"][3*i +
+                                                1]["contents"][2]["contents"][0]["text"] = trains_list[i][2]
 
     return message
 
