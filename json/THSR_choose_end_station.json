@@ -56,7 +56,7 @@
             },
             {
                 "imageBackgroundColor": "#FFFFFF",
-                "title": "請選擇起點",
+                "title": "請選擇終點",
                 "text": " ",
                 "actions": [
                     {
@@ -81,7 +81,7 @@
             },
             {
                 "imageBackgroundColor": "#FFFFFF",
-                "title": "請選擇起點",
+                "title": "請選擇終點",
                 "text": " ",
                 "actions": [
                     {

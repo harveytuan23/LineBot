@@ -110,19 +110,49 @@
             "contents": [
                 {
                     "type": "box",
-                    "layout": "vertical",
+                    "layout": "horizontal",
                     "contents": [
                         {
-                            "type": "text",
-                            "text": "車次 103",
-                            "align": "center",
-                            "size": "sm",
-                            "color": "#FFFFFF"
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "車次 103",
+                                    "align": "center",
+                                    "size": "sm",
+                                    "color": "#FFFFFF"
+                                }
+                            ],
+                            "backgroundColor": "#9D9D9D",
+                            "maxWidth": "80px",
+                            "cornerRadius": "xxl"
+                        },
+                        {
+                            "type": "box",
+                            "layout": "vertical",
+                            "contents": [
+                                {
+                                    "type": "text",
+                                    "text": "Fastest",
+                                    "size": "xs",
+                                    "color": "#FFFFFF",
+                                    "style": "italic",
+                                    "align": "center"
+                                }
+                            ],
+                            "backgroundColor": "#46A3FF",
+                            "width": "60px",
+                            "background": {
+                                "type": "linearGradient",
+                                "angle": "90deg",
+                                "startColor": "#FFFFFF",
+                                "endColor": "#FFFFFF"
+                            },
+                            "cornerRadius": "xxl",
+                            "offsetStart": "18px"
                         }
-                    ],
-                    "backgroundColor": "#ff7f33",
-                    "width": "70px",
-                    "offsetStart": "md"
+                    ]
                 },
                 {
                     "type": "box",
@@ -152,16 +182,16 @@
                                     "position": "relative",
                                     "align": "center",
                                     "aspectMode": "cover",
-                                    "margin": "5px",
-                                    "aspectRatio": "5.98:1"
+                                    "aspectRatio": "5.98:1",
+                                    "margin": "10px"
                                 },
                                 {
                                     "type": "text",
                                     "text": "30 min",
                                     "color": "#6C6C6C",
                                     "size": "xs",
-                                    "margin": "5px",
-                                    "align": "center"
+                                    "align": "center",
+                                    "margin": "3px"
                                 }
                             ],
                             "flex": 1
