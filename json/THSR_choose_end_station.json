@@ -8,56 +8,99 @@
                 "imageBackgroundColor": "#FFFFFF",
                 "title": "請選擇終點",
                 "text": " ",
-                "defaultAction": {
-                    "type": "uri",
-                    "label": "View detail",
-                    "uri": "http://example.com/page/123"
-                },
                 "actions": [
                     {
                         "type": "postback",
-                        "label": "南港",
-                        "data": "ES&南港&NanGang",
-                        "displayText": "南港"
+                        "label": "南港站",
+                        "data": "ES&南港站&NanGang",
+                        "displayText": "南港站"
                     },
                     {
                         "type": "postback",
-                        "label": "台北",
-                        "data": "ES&台北&TaiPei",
-                        "displayText": "台北"
+                        "label": "台北站",
+                        "data": "ES&台北站&TaiPei",
+                        "displayText": "台北站"
                     },
                     {
                         "type": "postback",
-                        "label": "板橋",
-                        "data": "ES&板橋&BanQiao",
-                        "displayText": "板橋"
+                        "label": "板橋站",
+                        "data": "ES&板橋站&BanQiao",
+                        "displayText": "板橋站"
                     }
                 ]
             },
             {
                 "imageBackgroundColor": "#000000",
-                "title": "this is menu",
-                "text": "description",
-                "defaultAction": {
-                    "type": "uri",
-                    "label": "View detail",
-                    "uri": "http://example.com/page/222"
-                },
+                "title": "請選擇終點",
+                "text": " ",
                 "actions": [
                     {
                         "type": "postback",
-                        "label": "桃園",
-                        "data": "action=buy&itemid=222"
+                        "label": "桃園站",
+                        "data": "ES&桃園站&TaoYuan",
+                        "displayText": "桃園站"
                     },
                     {
                         "type": "postback",
-                        "label": "新竹",
-                        "data": "action=add&itemid=222"
+                        "label": "新竹站",
+                        "data": "ES&新竹站&XinZhu",
+                        "displayText": "新竹站"
                     },
                     {
-                        "type": "uri",
-                        "label": "苗栗",
-                        "uri": "http://example.com/page/222"
+                        "type": "postback",
+                        "label": "苗栗站",
+                        "data": "ES&苗栗站&MiaoLi",
+                        "displayText": "苗栗站"
+                    }
+                ]
+            },
+            {
+                "imageBackgroundColor": "#FFFFFF",
+                "title": "請選擇起點",
+                "text": " ",
+                "actions": [
+                    {
+                        "type": "postback",
+                        "label": "台中站",
+                        "data": "ES&台中站&TaiZhong",
+                        "displayText": "台中站"
+                    },
+                    {
+                        "type": "postback",
+                        "label": "彰化站",
+                        "data": "ES&彰化站&ZhangHua",
+                        "displayText": "彰化站"
+                    },
+                    {
+                        "type": "postback",
+                        "label": "雲林站",
+                        "data": "ES&雲林站&YunLin",
+                        "displayText": "雲林站"
+                    }
+                ]
+            },
+            {
+                "imageBackgroundColor": "#FFFFFF",
+                "title": "請選擇起點",
+                "text": " ",
+                "actions": [
+                    {
+                        "type": "postback",
+                        "label": "嘉義站",
+                        "data": "ES&嘉義站&JiaYi",
+                        "displayText": "嘉義站"
+                    },
+                    {
+                        "type": "postback",
+                        "label": "台南站",
+                        "data": "ES&台南站&TaiNan",
+                        "displayText": "台南站"
+                    },
+                    {
+                        "type": "postback",
+                        "label": "左營站",
+                        "data": "ES&左營站&ZuoYing",
+                        "displayText": "左營站"
                     }
                 ]
             }

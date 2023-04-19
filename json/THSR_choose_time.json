@@ -19,9 +19,7 @@
                 "label": "選擇時間",
                 "data": "chooseTime",
                 "mode": "datetime",
-                "initial": "2023-04-11t08:00",
-                "max": "2023-04-24t23:59",
-                "min": "2023-04-08t00:00"
+                "initial": "2023-04-11t08:00"
             }
         ]
     }

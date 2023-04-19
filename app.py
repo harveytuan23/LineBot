@@ -160,8 +160,8 @@ def index():
                 with open("./json/THSR_station_data.json", 'r') as f:
                     json_data = json.load(f)
                 firstData = events[0]["postback"]["data"][0:2]
-                messageData = events[0]["postback"]["data"][3:5]
-                engStation = events[0]["postback"]["data"][6:]
+                messageData = events[0]["postback"]["data"][3:6]
+                engStation = events[0]["postback"]["data"][7:]
                 logger.info(engStation)
 
                 if firstData == "SS":
@@ -312,6 +312,7 @@ def THSR_result(searchTime):
     data = json.loads(response.text)
     num_of_train = len(data['data']['DepartureTable']['TrainItem'])
     logger.info(num_of_train)
+    logger.info(data['data']['DepartureTable']['TrainItem'])
 
     # Choose the time closest to the user selected departure time
     target_time = int(target_time.replace(":", ""))
@@ -332,7 +333,7 @@ def THSR_result(searchTime):
     # if num of train < 5, append corresponding amount of trains into time_list
     if num_of_train - closest_i < 5:
         for j in range(0, num_of_train - closest_i):
-            trains_list.append([0, 0, 0])
+            trains_list.append([0, 0, 0, 0])
             trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['TrainNumber']
             trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
@@ -340,11 +341,12 @@ def THSR_result(searchTime):
             trains_list[j][2] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[2:]
+            trains_list[j][3] = data['data']['DepartureTable']['TrainItem'][closest_i]['Duration']
             closest_i += 1
     # if num of train >= 5, append only five closest start time into time_list
     else:
         for j in range(0, 5):
-            trains_list.append([0, 0, 0])
+            trains_list.append([0, 0, 0, 0])
             trains_list[j][0] = data['data']['DepartureTable']['TrainItem'][closest_i]['TrainNumber']
             trains_list[j][1] = data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DepartureTime'].replace(
@@ -352,6 +354,7 @@ def THSR_result(searchTime):
             trains_list[j][2] = data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[:2] + ":" + data['data']['DepartureTable']['TrainItem'][closest_i]['DestinationTime'].replace(
                 ":", "").zfill(4)[2:]
+            trains_list[j][3] = data['data']['DepartureTable']['TrainItem'][closest_i]['Duration']
             closest_i += 1
 
     logger.info(f"total train : {trains_list}")
@@ -371,6 +374,8 @@ def THSR_result(searchTime):
     for i in range(0, len(trains_list)):
         message["contents"]["body"]["contents"][3*i][
             "contents"][0]["text"] = f'車次 {trains_list[i][0]}'
+        message["contents"]["body"]["contents"][3*i+1][
+            "contents"][1]["contents"][1]["text"] = trains_list[i][3]
         message["contents"]["body"]["contents"][3*i +
                                                 1]["contents"][0]["contents"][0]["text"] = trains_list[i][1]
         message["contents"]["body"]["contents"][3*i +

@@ -152,7 +152,7 @@
                                     "position": "relative",
                                     "align": "center",
                                     "aspectMode": "cover",
-                                    "margin": "10px",
+                                    "margin": "5px",
                                     "aspectRatio": "5.98:1"
                                 },
                                 {
@@ -160,6 +160,7 @@
                                     "text": "30 min",
                                     "color": "#6C6C6C",
                                     "size": "xs",
+                                    "margin": "5px",
                                     "align": "center"
                                 }
                             ],
@@ -235,13 +236,14 @@
                                     "align": "center",
                                     "aspectMode": "cover",
                                     "aspectRatio": "5.98:1",
-                                    "margin": "10px"
+                                    "margin": "5px"
                                 },
                                 {
                                     "type": "text",
                                     "text": "25 min",
                                     "color": "#6C6C6C",
                                     "size": "xs",
+                                    "margin": "5px",
                                     "align": "center"
                                 }
                             ],
@@ -316,13 +318,14 @@
                                     "align": "center",
                                     "aspectMode": "cover",
                                     "aspectRatio": "5.98:1",
-                                    "margin": "10px"
+                                    "margin": "5px"
                                 },
                                 {
                                     "type": "text",
                                     "text": "28 min",
                                     "color": "#6C6C6C",
                                     "size": "xs",
+                                    "margin": "5px",
                                     "align": "center"
                                 }
                             ],
@@ -397,13 +400,14 @@
                                     "align": "center",
                                     "aspectMode": "cover",
                                     "aspectRatio": "5.98:1",
-                                    "margin": "10px"
+                                    "margin": "5px"
                                 },
                                 {
                                     "type": "text",
                                     "text": "30 min",
                                     "color": "#6C6C6C",
                                     "size": "xs",
+                                    "margin": "5px",
                                     "align": "center"
                                 }
                             ],
@@ -478,13 +482,14 @@
                                     "align": "center",
                                     "aspectMode": "cover",
                                     "aspectRatio": "5.98:1",
-                                    "margin": "10px"
+                                    "margin": "5px"
                                 },
                                 {
                                     "type": "text",
                                     "text": "28 min",
                                     "color": "#6C6C6C",
                                     "size": "xs",
+                                    "margin": "5px",
                                     "align": "center"
                                 }
                             ],
