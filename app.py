@@ -171,11 +171,12 @@ def index():
                     with open("./json/THSR_station_data.json", "w") as f:
                         json.dump(json_data, f)
 
-                    payload["messages"] = [{
-                        "type": "text",
-                        "text": f"出發站為 : {chiStation}",
-                    },
-                        THSR_choose_end_station()]
+                    # payload["messages"] = [{
+                    #     "type": "text",
+                    #     "text": f"出發站為 : {chiStation}",
+                    # },
+                    #     THSR_choose_end_station()]
+                    payload["messages"] = [THSR_choose_end_station()]
 
                 elif firstData == "ES":
                     json_data["end_station"] = engStation
@@ -192,22 +193,24 @@ def index():
                         with open("./json/THSR_station_data.json", "w") as f:
                             json.dump(json_data, f)
 
-                        payload["messages"] = [{
-                            "type": "text",
-                            "text": f"終點站為 : {chiStation}"
-                        },
-                            THSR_choose_time()]
+                        # payload["messages"] = [{
+                        #     "type": "text",
+                        #     "text": f"終點站為 : {chiStation}"
+                        # },
+                        #     THSR_choose_time()]
+                        payload["messages"] = [THSR_choose_time()]
 
                 elif events[0]["postback"]["data"] == "chooseTime":
                     searchTime = events[0]["postback"]["params"]["datetime"].replace(
                         "T", " ")
                     logger.info(json_data["start_station"])
                     logger.info(json_data["end_station"])
-                    payload["messages"] = [{
-                        "type": "text",
-                        "text": f"查詢時間為 : {searchTime}"
-                    },
-                        THSR_result(searchTime)]
+                    # payload["messages"] = [{
+                    #     "type": "text",
+                    #     "text": f"查詢時間為 : {searchTime}"
+                    # },
+                    #     THSR_result(searchTime)]
+                    payload["messages"] = [THSR_result(searchTime)]
                 replyMessage(payload)
 
             else:
@@ -262,13 +265,13 @@ def sendTextMessageToMe():
 
 
 def THSR_choose_start_station():
-    with open("./json/THSR_choose_start_station.json", 'r', encoding='utf-8') as f:
+    with open("./json/THSR_choose_start_station_2.json", 'r', encoding='utf-8') as f:
         message = json.load(f)
     return message
 
 
 def THSR_choose_end_station():
-    with open("./json/THSR_choose_end_station.json", 'r', encoding='utf-8') as f:
+    with open("./json/THSR_choose_end_station_2.json", 'r', encoding='utf-8') as f:
         message = json.load(f)
 
     return message
@@ -366,7 +369,7 @@ def THSR_result(searchTime):
     logger.info(f"total train : {trains_list}")
     logger.info(f"num of train : {len(trains_list)}")
     num_of_train_list = len(trains_list)
-    target_time = str(target_time)
+    target_time = str(target_time).zfill(4)
 
     # Read corresponding json carousel template according to the num of train
     with open(f"./json/THSR_result_{num_of_train_list}_data.json", 'r', encoding='utf-8') as f:
