@@ -278,10 +278,10 @@ def THSR_choose_end_station():
 
 
 def THSR_choose_time():
-    with open("./json/THSR_choose_time.json", 'r', encoding='utf-8') as f:
+    with open("./json/THSR_choose_time_2.json", 'r', encoding='utf-8') as f:
         message = json.load(f)
     now_time = datetime.now().strftime("%Y-%m-%dt%H:%M")
-    message["template"]["actions"][0]["initial"] = now_time
+    message["contents"]["body"]["contents"][0]["contents"][0]["action"]["initial"] = now_time
     return message
 
 

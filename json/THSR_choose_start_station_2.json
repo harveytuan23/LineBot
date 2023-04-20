@@ -9,7 +9,7 @@
             "contents": [
                 {
                     "type": "text",
-                    "text": "請選擇起點",
+                    "text": "請選擇出發站",
                     "weight": "bold",
                     "size": "xl"
                 },
