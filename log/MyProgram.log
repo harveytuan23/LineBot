@@ -1,0 +1,22 @@
+[INFO][2023-05-02 11:05:23][LINE:78][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'message', 'message': {'type': 'text', 'id': '18076495869128', 'text': '高鐵'}, 'webhookEventId': '01GZD6QZYK9X64N7AYECGM8VDB', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1682996723227, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': 'c093a127cbf54319b8342fdacd371662', 'mode': 'active'}]}
+[INFO][2023-05-02 11:05:24][LINE:175][app]: {}
+[INFO][2023-05-02 11:05:26][LINE:78][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'postback', 'postback': {'data': 'SS&台南站&TaiNan'}, 'webhookEventId': '01GZD6R2DP0QWG3GC67KT191SX', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1682996725726, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': '9f4bfeb21eda4c7fa46a42d706236eb6', 'mode': 'active'}]}
+[INFO][2023-05-02 11:05:26][LINE:175][app]: {}
+[INFO][2023-05-02 11:05:28][LINE:78][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'postback', 'postback': {'data': 'ES&桃園站&TaoYuan'}, 'webhookEventId': '01GZD6R445ZB9W09W3SPTPQ99T', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1682996727651, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': 'f023c54899d04f79a1a810bd47ab0ccf', 'mode': 'active'}]}
+[INFO][2023-05-02 11:05:28][LINE:175][app]: {}
+[INFO][2023-05-02 11:05:31][LINE:78][app]: {'destination': 'Ubd568cc17dd6ff7f9a6eed0cecf6b70a', 'events': [{'type': 'postback', 'postback': {'data': 'chooseTime', 'params': {'datetime': '2023-05-02T11:05'}}, 'webhookEventId': '01GZD6R7KCGE2SF0NMZ4VDRQKF', 'deliveryContext': {'isRedelivery': False}, 'timestamp': 1682996731473, 'source': {'type': 'user', 'userId': 'U4482c45b10a321dc59e8602369c3a608'}, 'replyToken': 'd85d8d41e0fe41d2aa7806e361ae4a25', 'mode': 'active'}]}
+[INFO][2023-05-02 11:05:31][LINE:130][app]: TaiNan
+[INFO][2023-05-02 11:05:31][LINE:131][app]: TaoYuan
+[INFO][2023-05-02 11:05:31][LINE:68][THSR]: TaiNan
+[INFO][2023-05-02 11:05:31][LINE:69][THSR]: TaoYuan
+[INFO][2023-05-02 11:05:31][LINE:72][THSR]: Search date : 2023/05/02
+[INFO][2023-05-02 11:05:31][LINE:73][THSR]: Search time : 11:05
+[INFO][2023-05-02 11:05:33][LINE:91][THSR]: 42
+[INFO][2023-05-02 11:05:33][LINE:105][THSR]: 1113
+[INFO][2023-05-02 11:05:33][LINE:106][THSR]: 1236
+[INFO][2023-05-02 11:05:33][LINE:107][THSR]: 15
+[INFO][2023-05-02 11:05:33][LINE:137][THSR]: [123, 137, 123, 137, 123]
+[INFO][2023-05-02 11:05:33][LINE:139][THSR]: 123
+[INFO][2023-05-02 11:05:33][LINE:141][THSR]: total train : [['0630', '11:13', '12:36', '01:23'], ['0822', '11:41', '13:18', '01:37'], ['0636', '12:13', '13:36', '01:23'], ['0826', '12:41', '14:18', '01:37'], ['0642', '13:13', '14:36', '01:23']]
+[INFO][2023-05-02 11:05:33][LINE:142][THSR]: num of train : 5
+[INFO][2023-05-02 11:05:33][LINE:175][app]: {}
