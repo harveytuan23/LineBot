@@ -88,7 +88,7 @@ def THSR_result(searchTime):
     response.encoding = "utf-8"
     data = json.loads(response.text)
     num_of_train = len(data['data']['DepartureTable']['TrainItem'])
-    logger.info(num_of_train)
+    # logger.info(num_of_train)
     # logger.info(data['data']['DepartureTable']['TrainItem'])
 
     # Choose the time closest to the user selected departure time
@@ -102,9 +102,9 @@ def THSR_result(searchTime):
                 ":", ""))
             closest_i = i
 
-    logger.info(closest_start_time)
-    logger.info(closest_end_time)
-    logger.info(closest_i)
+    # logger.info(closest_start_time)
+    # logger.info(closest_end_time)
+    # logger.info(closest_i)
 
     # Choose the train that matches the time and append into time_list
     # if num of train < 5, append corresponding amount of trains into time_list
@@ -138,8 +138,8 @@ def THSR_result(searchTime):
     min_duration = min(trains_duration)
     logger.info(min_duration)
 
-    logger.info(f"total train : {trains_list}")
-    logger.info(f"num of train : {len(trains_list)}")
+    # logger.info(f"total train : {trains_list}")
+    # logger.info(f"num of train : {len(trains_list)}")
     num_of_train_list = len(trains_list)
     target_time = str(target_time).zfill(4)
 

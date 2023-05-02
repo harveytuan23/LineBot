@@ -1,18 +1,22 @@
 from __future__ import unicode_literals
 from urllib import parse
-from flask import Flask, request, abort, render_template
+from flask import Flask, request, abort
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
-from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from linebot.models import *
 from datetime import datetime
-import string
 import requests
 import json
 import configparser
 import os
 import logging
-import THSR
+import time
 
+# import 所有功能
+import THSR
+import Restaurant
+import Weather
+import Astro
 
 # 1.setup log path and create log directory
 logName = 'MyProgram.log'
@@ -50,7 +54,6 @@ app = Flask(__name__, static_url_path='/static')
 UPLOAD_FOLDER = 'static'
 ALLOWED_EXTENSIONS = set(['pdf', 'png', 'jpg', 'jpeg', 'gif'])
 
-
 config = configparser.ConfigParser()
 config.read('config.ini')
 
@@ -66,6 +69,10 @@ HEADER = {
     'Authorization': f'Bearer {config.get("line-bot", "channel_access_token")}'
 }
 
+# 城市 ===================================================================================================================
+key_city = ['基隆市天氣', '嘉義市天氣', '臺北市天氣', '台北市天氣', '嘉義縣天氣', '新北市天氣', '臺南市天氣', '台南市天氣', '桃園市天氣', '高雄市天氣', '新竹市天氣', '屏東縣天氣', '桃園縣天氣',
+            '宜蘭市天氣', '新竹縣天氣', '臺東縣天氣', '台東縣天氣', '苗栗縣天氣', '花蓮縣天氣', '臺中市天氣', '台中市天氣', '宜蘭縣天氣', '彰化縣天氣', '澎湖縣天氣', '南投縣天氣', '金門縣天氣', '雲林縣天氣', '連江縣天氣']
+
 
 @app.route("/", methods=['POST', 'GET'])
 def index():
@@ -75,63 +82,217 @@ def index():
     events = body["events"]
     if request.method == 'POST' and len(events) == 0:
         return 'ok'
-    logger.info(body)
-    print(body)
     if "replyToken" in events[0]:
         payload = dict()
         replyToken = events[0]["replyToken"]
         payload["replyToken"] = replyToken
         if events[0]["type"] == "message":
+
+            # ============ Message type : text ============
             if events[0]["message"]["type"] == "text":
                 text = events[0]["message"]["text"]
-                if text == "高鐵":
+
+                # ================== 高鐵查詢 ==================
+                if text == "高鐵查詢":
                     payload["messages"] = [
                         THSR.THSR_choose_start_station()]
+
+                # ================== 星座運勢 ==================
+                elif text == "星座運勢":
+                    payload["messages"] = [Astro.reply_astros_table()]
+
+                # ================== 天氣查詢-天氣預報 ==================
+                elif text == "各縣市天氣查詢":
+                    payload["messages"] = [Weather.flx()]
+
+                # ================== 天氣查詢-雷達 ==================
+                elif text in {'雷達', '雷達回波'}:
+                    line_bot_api.reply_message(
+                        replyToken, ImageSendMessage(original_content_url=f'https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0058-003.png?{time.time_ns()}',
+                                                     preview_image_url=f'https://cwbopendata.s3.ap-northeast-1.amazonaws.com/MSC/O-A0058-003.png?{time.time_ns()}'
+                                                     ))
+
+                # ================== 天氣查詢-地震 ==================
+                # elif text == '地震':
+                #     itt = Weather.get_equake()
+                #     logger.info("itt")
+                #     eqa_info = Weather.eq_info(itt)
+                #     logger.info("itt2")
+                #     line_bot_api.reply_message(
+                #         replyToken, TextSendMessage(text=eqa_info))
+
+                #     payload["messages"] = [{
+                #         "type": "text",
+                #     }]
+
+                # elif text == 'eq':
+                #     payload["messages"] = [{"type": "text",
+                #                             "text": Weather.get_earth_quake()}]
+
+                # ================== 天氣查詢-顯示天氣預報 ==================
+                elif text in key_city:
+                    if text[0] == '台':
+                        text = text.replace('台', '臺')
+                    user_city = text[:3]
+                    weather = Weather.getWeather(user_city)
+                    wx = Weather.wxx(weather)
+                    ci = Weather.ciw(weather)
+                    msg_weaterInfo = Weather.transferWeatherData(weather)
+                    # msg_weaterInfo[3] = 80
+                    # msg_weaterInfo[8] = 100
+                    if msg_weaterInfo[3] > 42:
+                        url = 'https://cdn-icons-png.flaticon.com/512/622/622085.png'
+                    elif 41 > msg_weaterInfo[3] & msg_weaterInfo[3] > 20:
+                        url = 'https://cdn-icons-png.flaticon.com/512/2042/2042088.png'
+                    else:
+                        url = 'https://cdn-icons-png.flaticon.com/512/1838/1838873.png'
+                    if msg_weaterInfo[8] > 42:
+                        url1 = 'https://cdn-icons-png.flaticon.com/512/622/622085.png'
+                    else:
+                        url1 = 'https://cdn-icons-png.flaticon.com/512/1838/1838873.png'
+
+                    line_bot_api.reply_message(
+                        replyToken, TemplateSendMessage(
+                            alt_text=user_city + '未來 36 小時天氣預測',
+                            template=CarouselTemplate(
+                                columns=[
+                                    CarouselColumn(
+                                        thumbnail_image_url=url,
+                                        title='{}'.format(
+                                            msg_weaterInfo[0]),
+                                        text='天氣狀況:{}\n舒適度:{}\n溫度 {}°C 至 {}°C \n降雨機率: {}%\n{}{}{}'.format(
+                                            wx[0], ci[0], msg_weaterInfo[
+                                                1], msg_weaterInfo[2], msg_weaterInfo[3], msg_weaterInfo[9], msg_weaterInfo[10], msg_weaterInfo[11]
+                                        ),
+                                        actions=[
+                                            URIAction(
+                                                label='氣象局詳細內容',
+                                                uri='https://www.cwb.gov.tw/V8/C/W/County/index.html'
+                                            )
+                                        ]
+                                    ),
+                                    CarouselColumn(
+                                        thumbnail_image_url=url1,
+                                        title='{}'.format(
+                                            msg_weaterInfo[5]),
+                                        text='天氣狀況: {}\n舒適度:{}\n溫度 {}°C 至 {}°C \n降雨機率:{}%'.format(
+                                            wx[2], ci[2],  msg_weaterInfo[6], msg_weaterInfo[7], msg_weaterInfo[8]),
+
+                                        actions=[
+                                            URIAction(
+                                                label='氣象局詳細內容',
+                                                uri='https://www.cwb.gov.tw/V8/C/W/County/index.html'
+                                            )
+                                        ]
+                                    )
+
+                                ]
+                            )
+
+
+                        ))
                 replyMessage(payload)
 
-        elif events[0]["type"] == "postback":
+            # ============ Message type : location ============
+            elif events[0]["message"]["type"] == "location":
 
-            if "data" in events[0]["postback"]:
+                # ================== 餐廳查詢 ==================
+                latitude = events[0]["message"]["latitude"]
+                longitude = events[0]["message"]["longitude"]
+                payload["messages"] = [
+                    Restaurant.Restaurant(latitude, longitude)]
+                replyMessage(payload)
+
+        # ============ Message type : Postback ============
+        elif events[0]["type"] == "postback":
+            firstData = events[0]["postback"]["data"][0:2]
+
+            # ================== 高鐵查詢 - start station ====================
+            if "data" in events[0]["postback"] and firstData == "SS":
                 with open("./json/THSR_station_data.json", 'r') as f:
                     json_data = json.load(f)
-                firstData = events[0]["postback"]["data"][0:2]
+
                 chiStation = events[0]["postback"]["data"][3:6]
                 engStation = events[0]["postback"]["data"][7:]
+                json_data["start_station"] = engStation
+                json_data["chi_start_station"] = chiStation
 
-                if firstData == "SS":
-                    json_data["start_station"] = engStation
-                    json_data["chi_start_station"] = chiStation
+                # Save station data to json
+                with open("./json/THSR_station_data.json", "w") as f:
+                    json.dump(json_data, f)
+                payload["messages"] = [THSR.THSR_choose_end_station()]
 
+            # ================== 高鐵查詢 - end station ====================
+            elif "data" in events[0]["postback"] and firstData == "ES":
+                with open("./json/THSR_station_data.json", 'r') as f:
+                    json_data = json.load(f)
+
+                chiStation = events[0]["postback"]["data"][3:6]
+                engStation = events[0]["postback"]["data"][7:]
+                json_data["end_station"] = engStation
+                json_data["chi_end_station"] = chiStation
+
+                if json_data["end_station"] == json_data["start_station"]:
+                    logger.info("error")
+                    payload["messages"] = [{
+                        "type": "text",
+                        "text": "出發站不能等於到達站"
+                    },
+                        THSR.THSR_choose_end_station()]
+                else:
                     # Save station data to json
                     with open("./json/THSR_station_data.json", "w") as f:
                         json.dump(json_data, f)
-                    payload["messages"] = [THSR.THSR_choose_end_station()]
 
-                elif firstData == "ES":
-                    json_data["end_station"] = engStation
-                    json_data["chi_end_station"] = chiStation
-                    if json_data["end_station"] == json_data["start_station"]:
-                        logger.info("error")
-                        payload["messages"] = [{
-                            "type": "text",
-                            "text": "出發站不能等於到達站"
-                        },
-                            THSR.THSR_choose_end_station()]
-                    else:
-                        # Save station data to json
-                        with open("./json/THSR_station_data.json", "w") as f:
-                            json.dump(json_data, f)
+                    payload["messages"] = [THSR.THSR_choose_time()]
 
-                        payload["messages"] = [THSR.THSR_choose_time()]
+            # ================== 高鐵查詢 - choose time ====================
+            elif events[0]["postback"]["data"] == "chooseTime":
+                with open("./json/THSR_station_data.json", 'r') as f:
+                    json_data = json.load(f)
 
-                elif events[0]["postback"]["data"] == "chooseTime":
-                    searchTime = events[0]["postback"]["params"]["datetime"].replace(
-                        "T", " ")
-                    logger.info(json_data["start_station"])
-                    logger.info(json_data["end_station"])
+                searchTime = events[0]["postback"]["params"]["datetime"].replace(
+                    "T", " ")
+                logger.info(json_data["start_station"])
+                logger.info(json_data["end_station"])
 
-                    payload["messages"] = [THSR.THSR_result(searchTime)]
-                replyMessage(payload)
+                payload["messages"] = [THSR.THSR_result(searchTime)]
+
+            # ================== 星座運勢查詢 - choose Astro ====================
+            elif "data" in events[0]["postback"] and firstData == "AS":
+                with open("./json/Astro_data.json", 'r') as f:
+                    json_data = json.load(f)
+
+                userAstro = events[0]["postback"]["data"][3:6]
+                json_data["selected_astro"] = userAstro
+
+                with open("./json/Astro_data.json", "w") as f:
+                    json.dump(json_data, f)
+
+                # print('=================')
+                # print(payload)
+                # print(json_data)
+                # print(userAstro)
+                # print('=================')
+                payload["messages"] = [Astro.reply_time_selecter()]
+
+            # ================== 星座運勢查詢 - choose date ====================
+            elif "data" in events[0]["postback"] and firstData == "TM":
+                with open("./json/Astro_data.json", 'r') as f:
+                    json_data = json.load(f)
+
+                json_data["selected_time"] = events[0]["postback"]["data"][3:5]
+
+                with open("./json/Astro_data.json", "w") as f:
+                    json.dump(json_data, f)
+
+                # print("+"*20)
+                # print("ok")
+                # print(json_data)
+                # print("+"*20)
+                payload["messages"] = [Astro.reply_result_message()]
+
+            replyMessage(payload)
 
     return 'OK'
 
